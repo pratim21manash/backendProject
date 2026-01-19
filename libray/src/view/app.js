@@ -19,14 +19,6 @@ const elements = {
     addBookSection: document.getElementById('addBookSection'),
     updateBookSection: document.getElementById('updateBookSection'),
     
-    // Update Form Inputs (FIXED: Added direct references)
-    updateId: document.getElementById('updateId'),
-    updateTitle: document.getElementById('updateTitle'),
-    updateAuthor: document.getElementById('updateAuthor'),
-    updatePages: document.getElementById('updatePages'),
-    updateGenre: document.getElementById('updateGenre'),
-    updateYear: document.getElementById('updateYear'),
-    
     // Buttons
     clearFormBtn: document.getElementById('clearForm'),
     cancelUpdateBtn: document.getElementById('cancelUpdate'),
@@ -189,7 +181,7 @@ function displayBooks(books) {
 }
 
 /**
- * Add a new book
+ * Add a new book - FIXED VERSION
  */
 async function addBook(event) {
     event.preventDefault();
@@ -198,17 +190,20 @@ async function addBook(event) {
     const formData = new FormData(form);
     
     const bookData = {
-        title: formData.get('title')?.trim() || '',
-        authorName: formData.get('author')?.trim() || '',
-        pages: parseInt(formData.get('pages')) || 0,
-        genre: formData.get('genre')?.trim() || undefined,
-        publishedYear: formData.get('publishedYear') ? parseInt(formData.get('publishedYear')) : undefined,
+        title: document.getElementById('title').value.trim(),
+        authorName: document.getElementById('author').value.trim(),
+        pages: parseInt(document.getElementById('pages').value),
+        genre: document.getElementById('genre').value || undefined,
+        publishedYear: document.getElementById('publishedYear').value ? 
+                      parseInt(document.getElementById('publishedYear').value) : undefined,
         rating: parseInt(document.getElementById('rating').value) || undefined
     };
 
+    console.log('Book data to send:', bookData); // Debug log
+
     // Validation
     if (!bookData.title || !bookData.authorName || !bookData.pages || bookData.pages <= 0) {
-        showToast('Please fill in all required fields correctly', 'error');
+        showToast('Please fill in all required fields (Title, Author, and valid Pages)', 'error');
         return;
     }
 
@@ -224,6 +219,7 @@ async function addBook(event) {
         });
 
         const data = await response.json();
+        console.log('Response from server:', data); // Debug log
         
         if (data.success) {
             showToast('Book added successfully! 📖', 'success');
@@ -240,7 +236,7 @@ async function addBook(event) {
 }
 
 /**
- * Edit book - show update form
+ * Edit book - show update form - FIXED VERSION
  */
 async function editBook(bookId) {
     try {
@@ -250,17 +246,19 @@ async function editBook(bookId) {
             return;
         }
 
+        console.log('Editing book:', book); // Debug log
+
         // Show update form
         elements.addBookSection.classList.add('hidden');
         elements.updateBookSection.classList.remove('hidden');
         
-        // Fill form with book data (FIXED: Using direct element references)
-        elements.updateId.value = book._id;
-        elements.updateTitle.value = book.title;
-        elements.updateAuthor.value = book.author?.name || '';
-        elements.updatePages.value = book.pages;
-        elements.updateGenre.value = book.genre || '';
-        elements.updateYear.value = book.publishedYear || '';
+        // Fill form with book data - using document.getElementById directly
+        document.getElementById('updateId').value = book._id;
+        document.getElementById('updateTitle').value = book.title;
+        document.getElementById('updateAuthor').value = book.author?.name || '';
+        document.getElementById('updatePages').value = book.pages;
+        document.getElementById('updateGenre').value = book.genre || '';
+        document.getElementById('updateYear').value = book.publishedYear || '';
         
         // Scroll to update form
         elements.updateBookSection.scrollIntoView({ behavior: 'smooth' });
@@ -273,40 +271,29 @@ async function editBook(bookId) {
 }
 
 /**
- * Update book (FIXED VERSION)
+ * Update book - FIXED VERSION
  */
 async function updateBook(event) {
     event.preventDefault();
     
-    const bookId = elements.updateId.value;
-    
-    // Get values directly from input elements (FIXED APPROACH)
+    const bookId = document.getElementById('updateId').value;
     const bookData = {
-        title: elements.updateTitle.value?.trim() || '',
-        authorName: elements.updateAuthor.value?.trim() || '',
-        pages: parseInt(elements.updatePages.value) || 0,
-        genre: elements.updateGenre.value?.trim() || undefined,
-        publishedYear: elements.updateYear.value ? parseInt(elements.updateYear.value) : undefined
+        title: document.getElementById('updateTitle').value.trim(),
+        authorName: document.getElementById('updateAuthor').value.trim(),
+        pages: parseInt(document.getElementById('updatePages').value),
+        genre: document.getElementById('updateGenre').value || undefined,
+        publishedYear: document.getElementById('updateYear').value ? 
+                      parseInt(document.getElementById('updateYear').value) : undefined
     };
 
-    // Validation (FIXED: Added proper validation)
+    console.log('Updating book with ID:', bookId); // Debug log
     console.log('Update data:', bookData); // Debug log
-    
+
+    // Validation
     if (!bookData.title || !bookData.authorName || !bookData.pages || bookData.pages <= 0) {
         showToast('Please fill in all required fields (Title, Author, and valid Pages)', 'error');
-        
-        // Highlight empty fields
-        if (!bookData.title) elements.updateTitle.style.borderColor = '#f94144';
-        if (!bookData.authorName) elements.updateAuthor.style.borderColor = '#f94144';
-        if (!bookData.pages || bookData.pages <= 0) elements.updatePages.style.borderColor = '#f94144';
-        
         return;
     }
-    
-    // Reset border colors
-    elements.updateTitle.style.borderColor = '';
-    elements.updateAuthor.style.borderColor = '';
-    elements.updatePages.style.borderColor = '';
 
     try {
         showToast('Updating book...', 'info');
@@ -485,44 +472,63 @@ function updateAuthorsGrid() {
 }
 
 /**
- * Setup event listeners
+ * Setup event listeners - FIXED VERSION
  */
 function setupEventListeners() {
     // Form submissions
-    elements.addBookForm.addEventListener('submit', addBook);
-    elements.updateBookForm.addEventListener('submit', updateBook);
+    if (elements.addBookForm) {
+        elements.addBookForm.addEventListener('submit', addBook);
+    }
+    
+    if (elements.updateBookForm) {
+        elements.updateBookForm.addEventListener('submit', updateBook);
+    }
     
     // Button clicks
-    elements.clearFormBtn.addEventListener('click', () => {
-        elements.addBookForm.reset();
-        resetRatingStars();
-        showToast('Form cleared', 'info');
-    });
+    if (elements.clearFormBtn) {
+        elements.clearFormBtn.addEventListener('click', () => {
+            elements.addBookForm.reset();
+            resetRatingStars();
+            showToast('Form cleared', 'info');
+        });
+    }
     
-    elements.cancelUpdateBtn.addEventListener('click', cancelUpdate);
-    elements.refreshBooksBtn.addEventListener('click', fetchBooks);
-    elements.refreshStatsBtn.addEventListener('click', updateDashboardStats);
+    if (elements.cancelUpdateBtn) {
+        elements.cancelUpdateBtn.addEventListener('click', cancelUpdate);
+    }
+    
+    if (elements.refreshBooksBtn) {
+        elements.refreshBooksBtn.addEventListener('click', fetchBooks);
+    }
+    
+    if (elements.refreshStatsBtn) {
+        elements.refreshStatsBtn.addEventListener('click', updateDashboardStats);
+    }
     
     // Theme toggle
-    elements.themeToggle.addEventListener('click', toggleTheme);
+    if (elements.themeToggle) {
+        elements.themeToggle.addEventListener('click', toggleTheme);
+    }
     
     // Search functionality
-    elements.searchBookInput.addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase().trim();
-        
-        if (!searchTerm) {
-            displayBooks(allBooks);
-            return;
-        }
-        
-        const filteredBooks = allBooks.filter(book => 
-            book.title.toLowerCase().includes(searchTerm) ||
-            (book.author?.name || '').toLowerCase().includes(searchTerm) ||
-            (book.genre || '').toLowerCase().includes(searchTerm)
-        );
-        
-        displayBooks(filteredBooks);
-    });
+    if (elements.searchBookInput) {
+        elements.searchBookInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            
+            if (!searchTerm) {
+                displayBooks(allBooks);
+                return;
+            }
+            
+            const filteredBooks = allBooks.filter(book => 
+                book.title.toLowerCase().includes(searchTerm) ||
+                (book.author?.name || '').toLowerCase().includes(searchTerm) ||
+                (book.genre || '').toLowerCase().includes(searchTerm)
+            );
+            
+            displayBooks(filteredBooks);
+        });
+    }
     
     // Navigation
     document.querySelectorAll('.nav-link').forEach(link => {
@@ -540,19 +546,6 @@ function setupEventListeners() {
             }
         });
     });
-    
-    // Reset input borders on focus (FIXED: Added for update form)
-    elements.updateTitle.addEventListener('input', () => {
-        elements.updateTitle.style.borderColor = '';
-    });
-    
-    elements.updateAuthor.addEventListener('input', () => {
-        elements.updateAuthor.style.borderColor = '';
-    });
-    
-    elements.updatePages.addEventListener('input', () => {
-        elements.updatePages.style.borderColor = '';
-    });
 }
 
 /**
@@ -561,6 +554,8 @@ function setupEventListeners() {
 function setupRatingStars() {
     const stars = document.querySelectorAll('.stars i');
     const ratingInput = document.getElementById('rating');
+    
+    if (!stars.length || !ratingInput) return;
     
     stars.forEach(star => {
         star.addEventListener('click', () => {
@@ -606,6 +601,8 @@ function resetRatingStars() {
     const stars = document.querySelectorAll('.stars i');
     const ratingInput = document.getElementById('rating');
     
+    if (!stars.length || !ratingInput) return;
+    
     ratingInput.value = 0;
     stars.forEach(star => {
         star.className = 'far fa-star';
@@ -618,12 +615,11 @@ function resetRatingStars() {
 function cancelUpdate() {
     elements.updateBookSection.classList.add('hidden');
     elements.addBookSection.classList.remove('hidden');
-    elements.updateBookForm.reset();
     
-    // Reset border colors
-    elements.updateTitle.style.borderColor = '';
-    elements.updateAuthor.style.borderColor = '';
-    elements.updatePages.style.borderColor = '';
+    // Reset form
+    if (elements.updateBookForm) {
+        elements.updateBookForm.reset();
+    }
     
     // Scroll back to add form
     elements.addBookSection.scrollIntoView({ behavior: 'smooth' });
@@ -684,17 +680,6 @@ function getToastIcon(type) {
         case 'info': return 'info-circle';
         default: return 'info-circle';
     }
-}
-
-/**
- * Render star rating
- */
-function renderStars(rating) {
-    let stars = '';
-    for (let i = 1; i <= 5; i++) {
-        stars += i <= rating ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
-    }
-    return stars;
 }
 
 /**

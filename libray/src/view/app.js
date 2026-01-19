@@ -405,6 +405,9 @@ async function init() {
     }, 1000);
 }
 
+
+
+
 // Start the application
 document.addEventListener('DOMContentLoaded', init);
 

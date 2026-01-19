@@ -3,10 +3,7 @@ require("dotenv").config();
 
 const connectDB = async() => {
     try{
-        await mongoose.connect(process.env.MONGODB_URI,{
-            userNewUrlParser: true,
-            useUnifiedTopology: true
-        })
+        await mongoose.connect(process.env.MONGODB_URI);
         console.log("Mongodb connected successfully")
     }
     catch(error){
@@ -28,4 +25,4 @@ mongoose.connection.on("disconnect", () => {
     console.log("Monngoose connection from  mongodb")
 })
 
-mondule.exports = connectDB
+module.exports = connectDB

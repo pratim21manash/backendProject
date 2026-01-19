@@ -3,305 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📚 BookSage | Smart Library Tracker</title>
+    <title>📚 Library Book Tracker</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <i class="fas fa-book-open"></i>
-                <span>BookSage</span>
-            </div>
-            <div class="nav-menu">
-                <a href="#dashboard" class="nav-link active"><i class="fas fa-home"></i> Dashboard</a>
-                <a href="#books" class="nav-link"><i class="fas fa-book"></i> Books</a>
-                <a href="#authors" class="nav-link"><i class="fas fa-users"></i> Authors</a>
-                <a href="#stats" class="nav-link"><i class="fas fa-chart-line"></i> Stats</a>
-                <a href="#about" class="nav-link"><i class="fas fa-info-circle"></i> About</a>
-            </div>
-            <div class="nav-actions">
-                <div class="api-status">
-                    <span class="status-dot" id="statusDot"></span>
-                    <span id="apiStatus">Connecting...</span>
-                </div>
-                <button id="themeToggle" class="btn-icon">
-                    <i class="fas fa-moon"></i>
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Container -->
     <div class="container">
-        <!-- Hero Section -->
-        <header class="hero">
-            <div class="hero-content">
-                <h1><span class="highlight">Track</span>, <span class="highlight">Organize</span>, <span class="highlight">Discover</span></h1>
-                <p class="hero-subtitle">Your personal library management system. Built with MVC architecture.</p>
-                <div class="hero-stats">
-                    <div class="stat-card">
-                        <i class="fas fa-book"></i>
-                        <div>
-                            <h3 id="heroTotalBooks">0</h3>
-                            <p>Total Books</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-file-lines"></i>
-                        <div>
-                            <h3 id="heroTotalPages">0</h3>
-                            <p>Total Pages</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-user-pen"></i>
-                        <div>
-                            <h3 id="heroUniqueAuthors">0</h3>
-                            <p>Unique Authors</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="hero-image">
-                <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Library">
-            </div>
+        <!-- Header -->
+        <header>
+            <h1><i class="fas fa-book"></i> Library Book Tracker</h1>
+            <p class="subtitle">Manage your book collection with ease</p>
         </header>
 
         <!-- Main Content -->
-        <main class="main-content">
-            <!-- Left Panel - Forms -->
+        <div class="main-content">
+            <!-- Left Panel - Add/Edit Books -->
             <div class="left-panel">
-                <!-- Add Book Card -->
-                <section class="card card-form" id="addBookSection">
-                    <div class="card-header">
-                        <h2><i class="fas fa-plus-circle"></i> Add New Book</h2>
-                        <p>Fill in the details to add a book to your collection</p>
-                    </div>
-                    <form id="addBookForm" class="book-form">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="title"><i class="fas fa-heading"></i> Book Title *</label>
-                                <input type="text" id="title" placeholder="Enter book title" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="author"><i class="fas fa-user-pen"></i> Author Name *</label>
-                                <input type="text" id="author" placeholder="Enter author name" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="pages"><i class="fas fa-file-lines"></i> Pages *</label>
-                                <input type="number" id="pages" placeholder="Number of pages" min="1" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="genre"><i class="fas fa-tags"></i> Genre</label>
-                                <div class="select-wrapper">
-                                    <select id="genre">
-                                        <option value="">Select Genre</option>
-                                        <option value="Fiction">Fiction</option>
-                                        <option value="Non-Fiction">Non-Fiction</option>
-                                        <option value="Science Fiction">Science Fiction</option>
-                                        <option value="Fantasy">Fantasy</option>
-                                        <option value="Mystery">Mystery</option>
-                                        <option value="Biography">Biography</option>
-                                        <option value="History">History</option>
-                                        <option value="Science">Science</option>
-                                        <option value="Technology">Technology</option>
-                                        <option value="Poetry">Poetry</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="publishedYear"><i class="fas fa-calendar"></i> Published Year</label>
-                                <input type="number" id="publishedYear" placeholder="e.g., 2020" min="1000" max="2026">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="rating"><i class="fas fa-star"></i> Your Rating</label>
-                                <div class="rating-input">
-                                    <div class="stars">
-                                        <i class="far fa-star" data-value="1"></i>
-                                        <i class="far fa-star" data-value="2"></i>
-                                        <i class="far fa-star" data-value="3"></i>
-                                        <i class="far fa-star" data-value="4"></i>
-                                        <i class="far fa-star" data-value="5"></i>
-                                    </div>
-                                    <input type="hidden" id="rating" value="0">
-                                </div>
-                            </div>
+                <div class="card">
+                    <h2><i class="fas fa-plus-circle"></i> Add New Book</h2>
+                    <form id="addBookForm">
+                        <div class="form-group">
+                            <label for="title"><i class="fas fa-heading"></i> Book Title</label>
+                            <input type="text" id="title" placeholder="Enter book title" required>
                         </div>
                         
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-book-medical"></i> Add to Collection
-                            </button>
-                            <button type="button" id="clearForm" class="btn btn-outline">
-                                <i class="fas fa-broom"></i> Clear Form
-                            </button>
+                        <div class="form-group">
+                            <label for="author"><i class="fas fa-user-pen"></i> Author Name</label>
+                            <input type="text" id="author" placeholder="Enter author name" required>
                         </div>
+                        
+                        <div class="form-group">
+                            <label for="pages"><i class="fas fa-file-lines"></i> Number of Pages</label>
+                            <input type="number" id="pages" placeholder="Enter page count" min="1" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="genre"><i class="fas fa-tags"></i> Genre</label>
+                            <input type="text" id="genre" placeholder="e.g., Fiction, Science, History">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="publishedYear"><i class="fas fa-calendar"></i> Published Year</label>
+                            <input type="number" id="publishedYear" placeholder="e.g., 2020" min="1000" max="2026">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Add Book
+                        </button>
+                        <button type="button" id="clearForm" class="btn btn-secondary">
+                            <i class="fas fa-broom"></i> Clear Form
+                        </button>
                     </form>
-                </section>
+                </div>
 
-                <!-- Update Book Card (Hidden by default) -->
-                <section class="card card-form hidden" id="updateBookSection">
-                    <div class="card-header">
-                        <h2><i class="fas fa-edit"></i> Edit Book</h2>
-                        <p>Update the book information</p>
-                    </div>
-                    <form id="updateBookForm" class="book-form">
+                <!-- Update Book Form (Hidden by default) -->
+                <div class="card hidden" id="updateCard">
+                    <h2><i class="fas fa-edit"></i> Update Book</h2>
+                    <form id="updateBookForm">
                         <input type="hidden" id="updateId">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="updateTitle">Book Title *</label>
-                                <input type="text" id="updateTitle" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="updateAuthor">Author Name *</label>
-                                <input type="text" id="updateAuthor" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="updatePages">Pages *</label>
-                                <input type="number" id="updatePages" min="1" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="updateGenre">Genre</label>
-                                <div class="select-wrapper">
-                                    <select id="updateGenre">
-                                        <option value="">Select Genre</option>
-                                        <option value="Fiction">Fiction</option>
-                                        <option value="Non-Fiction">Non-Fiction</option>
-                                        <option value="Science Fiction">Science Fiction</option>
-                                        <option value="Fantasy">Fantasy</option>
-                                        <option value="Mystery">Mystery</option>
-                                        <option value="Biography">Biography</option>
-                                        <option value="History">History</option>
-                                        <option value="Science">Science</option>
-                                        <option value="Technology">Technology</option>
-                                        <option value="Poetry">Poetry</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="updateYear">Published Year</label>
-                                <input type="number" id="updateYear" min="1000" max="2026">
-                            </div>
+                        <div class="form-group">
+                            <label for="updateTitle">Book Title</label>
+                            <input type="text" id="updateTitle" required>
                         </div>
                         
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-save"></i> Save Changes
-                            </button>
-                            <button type="button" id="cancelUpdate" class="btn btn-outline">
-                                <i class="fas fa-times"></i> Cancel
-                            </button>
+                        <div class="form-group">
+                            <label for="updateAuthor">Author Name</label>
+                            <input type="text" id="updateAuthor" required>
                         </div>
+                        
+                        <div class="form-group">
+                            <label for="updatePages">Number of Pages</label>
+                            <input type="number" id="updatePages" min="1" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="updateGenre">Genre</label>
+                            <input type="text" id="updateGenre">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="updateYear">Published Year</label>
+                            <input type="number" id="updateYear" min="1000" max="2026">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-sync-alt"></i> Update Book
+                        </button>
+                        <button type="button" id="cancelUpdate" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
                     </form>
-                </section>
+                </div>
             </div>
 
-            <!-- Right Panel - Data Display -->
+            <!-- Right Panel - Book List & Statistics -->
             <div class="right-panel">
-                <!-- Statistics Dashboard -->
-                <section class="card" id="stats">
-                    <div class="card-header">
-                        <h2><i class="fas fa-chart-pie"></i> Library Analytics</h2>
-                        <button id="refreshStats" class="btn btn-sm">
-                            <i class="fas fa-redo"></i> Refresh
+                <!-- Statistics Card -->
+                <div class="card stats-card">
+                    <h2><i class="fas fa-chart-bar"></i> Library Statistics</h2>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalBooks">0</div>
+                            <div class="stat-label">Total Books</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalPages">0</div>
+                            <div class="stat-label">Total Pages</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="uniqueAuthors">0</div>
+                            <div class="stat-label">Unique Authors</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="longestBook">0 pages</div>
+                            <div class="stat-label">Longest Book</div>
+                        </div>
+                    </div>
+                    <button id="refreshStats" class="btn btn-success">
+                        <i class="fas fa-redo"></i> Refresh Statistics
+                    </button>
+                </div>
+
+                <!-- Book List -->
+                <div class="card">
+                    <h2><i class="fas fa-book-open"></i> Book Collection</h2>
+                    <div class="controls">
+                        <input type="text" id="searchBook" placeholder="Search books..." class="search-input">
+                        <button id="refreshBooks" class="btn btn-info">
+                            <i class="fas fa-sync-alt"></i> Refresh List
                         </button>
                     </div>
-                    <div class="stats-dashboard">
-                        <div class="stat-large">
-                            <div class="stat-icon">
-                                <i class="fas fa-book-open"></i>
-                            </div>
-                            <div class="stat-content">
-                                <h3>Reading Progress</h3>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" id="pagesProgress" style="width: 0%"></div>
-                                </div>
-                                <p><span id="totalPagesStat">0</span> pages across <span id="totalBooksStat">0</span> books</p>
-                            </div>
-                        </div>
-                        
-                        <div class="stats-grid">
-                            <div class="stat-box">
-                                <div class="stat-box-icon success">
-                                    <i class="fas fa-book"></i>
-                                </div>
-                                <div>
-                                    <h4 id="longestBookTitle">None</h4>
-                                    <p>Longest Book</p>
-                                    <span class="stat-badge"><i class="fas fa-file-lines"></i> <span id="longestBookPages">0</span> pages</span>
-                                </div>
-                            </div>
-                            
-                            <div class="stat-box">
-                                <div class="stat-box-icon info">
-                                    <i class="fas fa-user-pen"></i>
-                                </div>
-                                <div>
-                                    <h4 id="topAuthor">None</h4>
-                                    <p>Most Prolific Author</p>
-                                    <span class="stat-badge"><i class="fas fa-books"></i> <span id="authorBookCount">0</span> books</span>
-                                </div>
-                            </div>
-                            
-                            <div class="stat-box">
-                                <div class="stat-box-icon warning">
-                                    <i class="fas fa-tags"></i>
-                                </div>
-                                <div>
-                                    <h4 id="topGenre">None</h4>
-                                    <p>Popular Genre</p>
-                                    <span class="stat-badge" id="genreCount">0 books</span>
-                                </div>
-                            </div>
-                            
-                            <div class="stat-box">
-                                <div class="stat-box-icon purple">
-                                    <i class="fas fa-calendar"></i>
-                                </div>
-                                <div>
-                                    <h4 id="avgPages">0</h4>
-                                    <p>Average Pages per Book</p>
-                                    <span class="stat-badge">Across all books</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Books Collection -->
-                <section class="card" id="books">
-                    <div class="card-header">
-                        <h2><i class="fas fa-books"></i> Your Collection</h2>
-                        <div class="header-actions">
-                            <div class="search-box">
-                                <i class="fas fa-search"></i>
-                                <input type="text" id="searchBook" placeholder="Search books, authors, genres...">
-                            </div>
-                            <button id="refreshBooks" class="btn btn-primary btn-sm">
-                                <i class="fas fa-sync-alt"></i> Refresh
-                            </button>
-                        </div>
-                    </div>
                     
-                    <div class="table-responsive">
-                        <table class="books-table">
+                    <div class="table-container">
+                        <table id="booksTable">
                             <thead>
                                 <tr>
-                                    <th>Book Details</th>
+                                    <th>Title</th>
                                     <th>Author</th>
                                     <th>Pages</th>
                                     <th>Genre</th>
@@ -309,159 +146,36 @@
                                 </tr>
                             </thead>
                             <tbody id="booksTableBody">
-                                <!-- Dynamic content will be inserted here -->
+                                <!-- Books will be inserted here by JavaScript -->
                                 <tr id="noBooksRow">
-                                    <td colspan="5">
-                                        <div class="empty-state">
-                                            <i class="fas fa-book-open"></i>
-                                            <h3>Your library is empty</h3>
-                                            <p>Add your first book to start tracking your collection!</p>
-                                            <button class="btn btn-primary" onclick="scrollToAddForm()">
-                                                <i class="fas fa-plus"></i> Add First Book
-                                            </button>
-                                        </div>
+                                    <td colspan="5" class="empty-message">
+                                        <i class="fas fa-book"></i> No books added yet. Add your first book!
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                </section>
+                </div>
 
-                <!-- Authors Gallery -->
-                <section class="card" id="authors">
-                    <div class="card-header">
-                        <h2><i class="fas fa-users"></i> Authors Gallery</h2>
-                        <p class="card-subtitle">All authors in your collection</p>
+                <!-- Authors List -->
+                <div class="card">
+                    <h2><i class="fas fa-users"></i> Authors</h2>
+                    <div id="authorsList">
+                        <!-- Authors will be inserted here -->
+                        <div class="empty-message">No authors yet</div>
                     </div>
-                    <div id="authorsGrid" class="authors-grid">
-                        <!-- Dynamic content will be inserted here -->
-                        <div class="empty-state-sm">
-                            <i class="fas fa-user-pen"></i>
-                            <p>No authors yet</p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- About Section -->
-                <section class="card about-card" id="about">
-                    <div class="card-header">
-                        <h2><i class="fas fa-info-circle"></i> About This Application</h2>
-                    </div>
-                    <div class="about-content">
-                        <div class="about-section">
-                            <h3><i class="fas fa-code"></i> What I've Built</h3>
-                            <p>This is a complete <strong>Full-Stack Library Management System</strong> built using the <strong>MVC (Model-View-Controller) architecture</strong> pattern. The application demonstrates real-world CRUD operations with a beautiful, responsive interface.</p>
-                        </div>
-                        
-                        <div class="about-section">
-                            <h3><i class="fas fa-check-circle"></i> Problems Solved</h3>
-                            <div class="features-grid">
-                                <div class="feature">
-                                    <i class="fas fa-database"></i>
-                                    <h4>Data Organization</h4>
-                                    <p>Managing book collections efficiently with proper database structure</p>
-                                </div>
-                                <div class="feature">
-                                    <i class="fas fa-chart-bar"></i>
-                                    <h4>Tracking & Analytics</h4>
-                                    <p>Real-time statistics about reading habits and collection insights</p>
-                                </div>
-                                <div class="feature">
-                                    <i class="fas fa-sync-alt"></i>
-                                    <h4>Real-time Updates</h4>
-                                    <p>Immediate reflection of changes without page reloads</p>
-                                </div>
-                                <div class="feature">
-                                    <i class="fas fa-mobile-alt"></i>
-                                    <h4>Responsive Design</h4>
-                                    <p>Works perfectly on desktop, tablet, and mobile devices</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="about-section">
-                            <h3><i class="fas fa-server"></i> Backend Connection</h3>
-                            <div class="connection-guide">
-                                <div class="step">
-                                    <span class="step-number">1</span>
-                                    <div>
-                                        <h4>Start Your Backend Server</h4>
-                                        <code class="code-block">cd backend<br>npm start</code>
-                                    </div>
-                                </div>
-                                <div class="step">
-                                    <span class="step-number">2</span>
-                                    <div>
-                                        <h4>Verify API is Running</h4>
-                                        <p>Open <a href="http://localhost:3000/health" target="_blank">http://localhost:3000/health</a></p>
-                                    </div>
-                                </div>
-                                <div class="step">
-                                    <span class="step-number">3</span>
-                                    <div>
-                                        <h4>Connect Frontend</h4>
-                                        <p>The frontend automatically connects to <code>http://localhost:3000</code></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="about-section">
-                            <h3><i class="fas fa-sitemap"></i> MVC Architecture</h3>
-                            <div class="mvc-diagram">
-                                <div class="mvc-item">
-                                    <div class="mvc-icon model">
-                                        <i class="fas fa-database"></i>
-                                    </div>
-                                    <h4>Model</h4>
-                                    <p>Database schemas and data logic</p>
-                                </div>
-                                <div class="mvc-item">
-                                    <div class="mvc-icon view">
-                                        <i class="fas fa-eye"></i>
-                                    </div>
-                                    <h4>View</h4>
-                                    <p>This beautiful UI you're seeing</p>
-                                </div>
-                                <div class="mvc-item">
-                                    <div class="mvc-icon controller">
-                                        <i class="fas fa-cogs"></i>
-                                    </div>
-                                    <h4>Controller</h4>
-                                    <p>Business logic and API endpoints</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                </div>
             </div>
-        </main>
+        </div>
 
         <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <i class="fas fa-book-open"></i>
-                    <h3>BookSage</h3>
-                    <p>Your intelligent library companion</p>
-                </div>
-                <div class="footer-links">
-                    <a href="#"><i class="fab fa-github"></i> GitHub</a>
-                    <a href="#"><i class="fas fa-code"></i> API Docs</a>
-                    <a href="#"><i class="fas fa-question-circle"></i> Help</a>
-                </div>
-                <div class="footer-info">
-                    <p>Built with <i class="fas fa-heart"></i> using Express.js MVC Architecture</p>
-                    <p class="footer-hint">
-                        <i class="fas fa-lightbulb"></i> Hint: Make sure your backend server is running on port 3000
-                    </p>
-                </div>
-            </div>
+        <footer>
+            <p>📚 Library Book Tracker | Backend API: <span id="apiStatus" class="status-offline">Disconnected</span></p>
+            <p class="hint">
+                <i class="fas fa-lightbulb"></i> Hint: Make sure your backend server is running on http://localhost:3000
+            </p>
         </footer>
     </div>
-
-    <!-- Toast Notifications -->
-    <div id="toastContainer"></div>
 
     <!-- JavaScript Files -->
     <script src="app.js"></script>

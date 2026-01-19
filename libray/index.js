@@ -20,11 +20,6 @@ app.use(express.urlencoded({extended: true}))
 // API Routes
 app.use('/api/books', bookRoutes)
 
-
-
-
-
-
 app.listen(process.env.PORT, () => {
     console.log('Server is running')
 })

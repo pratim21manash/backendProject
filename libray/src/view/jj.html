@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Campus Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .sidebar {
+            transition: transform 0.3s ease;
+        }
+        .sidebar-mobile-hidden {
+            transform: translateX(-100%);
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .tab-active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 4px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <button id="menuToggle" class="lg:hidden mr-4 text-gray-600">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <h1 class="text-2xl font-bold text-gray-800">
+                    <i class="fas fa-graduation-cap text-blue-600 mr-2"></i>
+                    Smart Campus
+                </h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <i class="fas fa-bell text-gray-600 text-xl"></i>
+                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">A</div>
+                    <span class="hidden md:inline text-gray-700">Admin User</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar sidebar-mobile-hidden lg:translate-x-0 bg-gray-900 text-white w-64 min-h-screen fixed lg:static z-40">
+            <div class="p-6">
+                <h2 class="text-xl font-bold mb-2">Campus Dashboard</h2>
+                <p class="text-gray-400 text-sm">Management System</p>
+            </div>
+            
+            <nav class="mt-4">
+                <button data-tab="dashboard" class="tab-btn w-full text-left py-3 px-6 flex items-center hover:bg-gray-800 transition-colors">
+                    <i class="fas fa-tachometer-alt mr-3"></i>
+                    Dashboard
+                </button>
+                <button data-tab="library" class="tab-btn w-full text-left py-3 px-6 flex items-center hover:bg-gray-800 transition-colors">
+                    <i class="fas fa-book mr-3"></i>
+                    Library
+                </button>
+                <button data-tab="attendance" class="tab-btn w-full text-left py-3 px-6 flex items-center hover:bg-gray-800 transition-colors">
+                    <i class="fas fa-calendar-check mr-3"></i>
+                    Attendance
+                </button>
+                <button data-tab="results" class="tab-btn w-full text-left py-3 px-6 flex items-center hover:bg-gray-800 transition-colors">
+                    <i class="fas fa-chart-line mr-3"></i>
+                    Results
+                </button>
+                <button data-tab="fees" class="tab-btn w-full text-left py-3 px-6 flex items-center hover:bg-gray-800 transition-colors">
+                    <i class="fas fa-credit-card mr-3"></i>
+                    Fees
+                </button>
+                <button data-tab="hostel" class="tab-btn w-full text-left py-3 px-6 flex items-center hover:bg-gray-800 transition-colors">
+                    <i class="fas fa-home mr-3"></i>
+                    Hostel
+                </button>
+                <button data-tab="cafeteria" class="tab-btn w-full text-left py-3 px-6 flex items-center hover:bg-gray-800 transition-colors">
+                    <i class="fas fa-coffee mr-3"></i>
+                    Cafeteria
+                </button>
+            </nav>
+            
+            <div class="absolute bottom-0 w-full p-6 border-t border-gray-800">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                        <span class="font-bold">AD</span>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium">Administrator</p>
+                        <p class="text-xs text-gray-400">admin@campus.edu</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-4 lg:p-6">
+            <!-- Tab Content -->
+            <div id="tabContent" class="fade-in">
+                <!-- Dashboard Tab (Default) -->
+                <div id="dashboard" class="tab-content">
+                    <div class="mb-6">
+                        <h1 class="text-3xl font-bold text-gray-900">Smart Campus Dashboard</h1>
+                        <p class="text-gray-600 mt-2">Welcome to the centralized campus management system</p>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        <div class="card-hover bg-white rounded-xl shadow p-6 transition-all duration-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-600">Total Students</p>
+                                    <p id="totalStudents" class="text-2xl font-bold">0</p>
+                                    <p class="text-green-600 text-sm mt-1"><i class="fas fa-arrow-up mr-1"></i> 5% from last month</p>
+                                </div>
+                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-users text-blue-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-hover bg-white rounded-xl shadow p-6 transition-all duration-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-600">Books Issued</p>
+                                    <p id="booksIssued" class="text-2xl font-bold">0</p>
+                                    <p class="text-green-600 text-sm mt-1"><i class="fas fa-arrow-up mr-1"></i> 12% from last month</p>
+                                </div>
+                                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-book text-green-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-hover bg-white rounded-xl shadow p-6 transition-all duration-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-600">Fees Due</p>
+                                    <p id="feesDue" class="text-2xl font-bold">$0</p>
+                                    <p class="text-red-600 text-sm mt-1"><i class="fas fa-arrow-down mr-1"></i> 3% from last month</p>
+                                </div>
+                                <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-dollar-sign text-red-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-hover bg-white rounded-xl shadow p-6 transition-all duration-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-600">Today's Meals</p>
+                                    <p id="todayMeals" class="text-2xl font-bold">0</p>
+                                    <p class="text-green-600 text-sm mt-1"><i class="fas fa-arrow-up mr-1"></i> 8% from yesterday</p>
+                                </div>
+                                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-utensils text-purple-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-hover bg-white rounded-xl shadow p-6 transition-all duration-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-600">Today's Sales</p>
+                                    <p id="todaySales" class="text-2xl font-bold">$0</p>
+                                    <p class="text-green-600 text-sm mt-1"><i class="fas fa-arrow-up mr-1"></i> 15% from yesterday</p>
+                                </div>
+                                <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-coffee text-yellow-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-hover bg-white rounded-xl shadow p-6 transition-all duration-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-600">Avg Attendance</p>
+                                    <p class="text-2xl font-bold">87%</p>
+                                    <p class="text-green-600 text-sm mt-1"><i class="fas fa-arrow-up mr-1"></i> 2% from last week</p>
+                                </div>
+                                <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-chart-line text-indigo-600 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts and Student List -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                        <!-- Chart -->
+                        <div class="bg-white rounded-xl shadow p-6">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">Monthly Overview</h2>
+                            <div class="h-64">
+                                <canvas id="overviewChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Top Students -->
+                        <div class="bg-white rounded-xl shadow p-6">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">Top Students</h2>
+                            <div id="topStudentsList" class="space-y-4">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <button class="quick-action bg-blue-100 text-blue-700 px-4 py-3 rounded-lg hover:bg-blue-200 transition-colors">
+                                <i class="fas fa-book mr-2"></i>Issue Book
+                            </button>
+                            <button class="quick-action bg-green-100 text-green-700 px-4 py-3 rounded-lg hover:bg-green-200 transition-colors">
+                                <i class="fas fa-calendar-check mr-2"></i>Mark Attendance
+                            </button>
+                            <button class="quick-action bg-purple-100 text-purple-700 px-4 py-3 rounded-lg hover:bg-purple-200 transition-colors">
+                                <i class="fas fa-utensils mr-2"></i>Add Meal
+                            </button>
+                            <button class="quick-action bg-yellow-100 text-yellow-700 px-4 py-3 rounded-lg hover:bg-yellow-200 transition-colors">
+                                <i class="fas fa-coffee mr-2"></i>Record Sale
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Library Tab -->
+                <div id="library" class="tab-content hidden">
+                    <div class="mb-6">
+                        <h1 class="text-3xl font-bold text-gray-900">📚 Library Management</h1>
+                        <p class="text-gray-600 mt-2">Track book issues, returns, and reading analytics</p>
+                    </div>
+
+                    <!-- Library Stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="card-hover bg-white rounded-xl shadow p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-600">Total Books</p>
+                                    <p id="totalBooks" class="text-2xl font-bold">0</p>
+                                </div>
+                                <i class="fas fa-book text-blue-500 text-3xl"></i>
+                            </div>
+                        </div>
+                        <div class="card-hover bg-white rounded-xl shadow p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-600">Books Issued</p>
+                                    <p id="libraryIssued" class="text-2xl font-bold">0</p>
+                                </div>
+                                <i class="fas fa-user-check text-green-500 text-3xl"></i>
+                            </div>
+                        </div>
+                        <div class="card-hover bg-white rounded-xl shadow p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-600">Total Pages Read</p>
+                                    <p id="totalPages" class="text-2xl font-bold">0</p>
+                                </div>
+                                <i class="fas fa-scroll text-purple-500 text-3xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Issue Book Form -->
+                    <div class="bg-white rounded-xl shadow p-6 mb-8">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Issue New Book</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Select Student</label>
+                                <select id="issueStudent" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Choose student...</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Select Book</label>
+                                <select id="issueBook" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Choose book...</option>
+                                </select>
+                            </div>
+                            <div class="flex items-end">
+                                <button id="issueBookBtn" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                                    Issue Book
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Books Lists -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Available Books -->
+                        <div class="bg-white rounded-xl shadow">
+                            <div class="p-6 border-b">
+                                <h3 class="text-lg font-semibold text-gray-900">Available Books</h3>
+                            </div>
+                            <div id="availableBooks" class="divide-y max-h-96 overflow-y-auto scrollbar-thin">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <!-- Issued Books -->
+                        <div class="bg-white rounded-xl shadow">
+                            <div class="p-6 border-b">
+                                <h3 class="text-lg font-semibold text-gray-900">Currently Issued</h3>
+                            </div>
+                            <div id="issuedBooks" class="divide-y max-h-96 overflow-y-auto scrollbar-thin">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attendance Tab -->
+                <div id="attendance" class="tab-content hidden">
+                    <div class="mb-6">
+                        <h1 class="text-3xl font-bold text-gray-900">🧑‍🎓 Attendance Management</h1>
+                        <p class="text-gray-600 mt-2">Track student attendance and generate reports</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2">
+                            <div class="bg-white rounded-xl shadow p-6">
+                                <h2 class="text-xl font-semibold text-gray-900 mb-4">Mark Today's Attendance</h2>
+                                <div class="space-y-4">
+                                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                        <div>
+                                            <p class="font-medium">John Doe</p>
+                                            <p class="text-sm text-gray-600">Class 12A</p>
+                                        </div>
+                                        <div class="flex space-x-2">
+                                            <button class="mark-present px-4 py-1 bg-green-100 text-green-800 rounded-lg hover:bg-green-200">Present</button>
+                                            <button class="mark-absent px-4 py-1 bg-red-100 text-red-800 rounded-lg hover:bg-red-200">Absent</button>
+                                        </div>
+                                    </div>
+                                    <!-- More students will be added by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow p-6">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">Attendance Summary</h2>
+                            <div id="attendanceSummary">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Tab -->
+                <div id="results" class="tab-content hidden">
+                    <div class="mb-6">
+                        <h1 class="text-3xl font-bold text-gray-900">📊 Results Analytics</h1>
+                        <p class="text-gray-600 mt-2">View student performance and generate reports</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-xl shadow p-6">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">Top Performers</h2>
+                            <div id="topPerformers">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow p-6">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">Subject-wise Performance</h2>
+                            <div class="h-64">
+                                <canvas id="subjectChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fees Tab -->
+                <div id="fees" class="tab-content hidden">
+                    <div class="mb-6">
+                        <h1 class="text-3xl font-bold text-gray-900">💰 Fee Management</h1>
+                        <p class="text-gray-600 mt-2">Track fee payments and identify defaulters</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2">
+                            <div class="bg-white rounded-xl shadow p-6">
+                                <h2 class="text-xl font-semibold text-gray-900 mb-4">Fee Status</h2>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <thead>
+                                            <tr>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Student</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Month</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="feeTable" class="divide-y divide-gray-200">
+                                            <!-- Will be populated by JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow p-6">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">Payment Statistics</h2>
+                            <div class="space-y-4">
+                                <div>
+                                    <p class="text-gray-600">Total Collected</p>
+                                    <p id="totalCollected" class="text-2xl font-bold">$0</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600">Pending Amount</p>
+                                    <p id="pendingAmount" class="text-2xl font-bold text-red-600">$0</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600">Defaulters</p>
+                                    <p id="defaultersCount" class="text-2xl font-bold">0</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hostel Tab -->
+                <div id="hostel" class="tab-content hidden">
+                    <div class="mb-6">
+                        <h1 class="text-3xl font-bold text-gray-900">🏠 Hostel Management</h1>
+                        <p class="text-gray-600 mt-2">Track meals and generate monthly bills</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2">
+                            <div class="bg-white rounded-xl shadow p-6">
+                                <h2 class="text-xl font-semibold text-gray-900 mb-4">Today's Meal Count</h2>
+                                <div id="mealCount" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <!-- Will be populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow p-6">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">Monthly Bill Summary</h2>
+                            <div id="billSummary">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cafeteria Tab -->
+                <div id="cafeteria" class="tab-content hidden">
+                    <div class="mb-6">
+                        <h1 class="text-3xl font-bold text-gray-900">☕ Cafeteria POS</h1>
+                        <p class="text-gray-600 mt-2">Track sales and popular items</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2">
+                            <div class="bg-white rounded-xl shadow p-6">
+                                <h2 class="text-xl font-semibold text-gray-900 mb-4">Record New Sale</h2>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Item</label>
+                                        <select id="saleItem" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                            <option value="Coffee">Coffee - $3.5</option>
+                                            <option value="Sandwich">Sandwich - $5.0</option>
+                                            <option value="Pizza">Pizza - $8.5</option>
+                                            <option value="Burger">Burger - $6.0</option>
+                                            <option value="Salad">Salad - $4.5</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Student</label>
+                                        <select id="saleStudent" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                            <option value="">Select student...</option>
+                                        </select>
+                                    </div>
+                                    <div class="flex items-end">
+                                        <button id="recordSaleBtn" class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                                            Record Sale
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow p-6">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">Today's Sales</h2>
+                            <div id="todaySalesList">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Overlay for mobile sidebar -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden lg:hidden"></div>
+
+    <script>
+        // Mock Data
+        const mockData = {
+            students: [
+                { id: 'S001', name: 'John Doe', class: '12A', email: 'john@school.com' },
+                { id: 'S002', name: 'Jane Smith', class: '11B', email: 'jane@school.com' },
+                { id: 'S003', name: 'Bob Johnson', class: '10C', email: 'bob@school.com' },
+                { id: 'S004', name: 'Alice Brown', class: '12A', email: 'alice@school.com' },
+                { id: 'S005', name: 'Charlie Wilson', class: '11B', email: 'charlie@school.com' },
+            ],
+            books: [
+                { id: 'B001', title: 'Introduction to React', author: 'John Smith', pages: 300, category: 'Programming', issuedTo: 'S001', issueDate: '2024-01-15' },
+                { id: 'B002', title: 'Advanced JavaScript', author: 'Sarah Johnson', pages: 450, category: 'Programming', issuedTo: null, issueDate: null },
+                { id: 'B003', title: 'Database Systems', author: 'Mike Brown', pages: 550, category: 'Computer Science', issuedTo: 'S002', issueDate: '2024-01-10' },
+                { id: 'B004', title: 'Data Structures', author: 'Emily Davis', pages: 400, category: 'Computer Science', issuedTo: null, issueDate: null },
+                { id: 'B005', title: 'Web Development', author: 'Chris Lee', pages: 350, category: 'Programming', issuedTo: null, issueDate: null },
+            ],
+            attendance: [
+                { studentId: 'S001', date: '2024-01-20', present: true },
+                { studentId: 'S002', date: '2024-01-20', present: true },
+                { studentId: 'S003', date: '2024-01-20', present: false },
+                { studentId: 'S001', date: '2024-01-19', present: true },
+                { studentId: 'S002', date: '2024-01-19', present: true },
+            ],
+            results: [
+                { studentId: 'S001', math: 85, science: 90, english: 88, history: 92, total: 355, percentage: 88.75 },
+                { studentId: 'S002', math: 78, science: 85, english: 82, history: 88, total: 333, percentage: 83.25 },
+                { studentId: 'S003', math: 92, science: 94, english: 90, history: 91, total: 367, percentage: 91.75 },
+            ],
+            fees: [
+                { studentId: 'S001', month: 'January', amount: 500, paid: true, paymentDate: '2024-01-05' },
+                { studentId: 'S001', month: 'February', amount: 500, paid: false, dueDate: '2024-02-05' },
+                { studentId: 'S002', month: 'January', amount: 500, paid: true, paymentDate: '2024-01-10' },
+                { studentId: 'S002', month: 'February', amount: 500, paid: true, paymentDate: '2024-02-01' },
+                { studentId: 'S003', month: 'January', amount: 500, paid: false, dueDate: '2024-01-05' },
+            ],
+            hostelMeals: [
+                { studentId: 'S001', date: '2024-01-20', mealType: 'breakfast' },
+                { studentId: 'S001', date: '2024-01-20', mealType: 'lunch' },
+                { studentId: 'S002', date: '2024-01-20', mealType: 'breakfast' },
+            ],
+            cafeteriaSales: [
+                { studentId: 'S001', item: 'Coffee', amount: 3.5, date: '2024-01-20' },
+                { studentId: 'S002', item: 'Sandwich', amount: 5.0, date: '2024-01-20' },
+                { studentId: 'S003', item: 'Pizza', amount: 8.5, date: '2024-01-20' },
+            ]
+        };
+
+        // Utility Functions
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            }).format(amount);
+        }
+
+        function getStudentName(studentId) {
+            const student = mockData.students.find(s => s.id === studentId);
+            return student ? student.name : 'Unknown';
+        }
+
+        function getStudentClass(studentId) {
+            const student = mockData.students.find(s => s.id === studentId);
+            return student ? student.class : 'N/A';
+        }
+
+        // Dashboard Functions
+        function updateDashboardStats() {
+            // Calculate stats using reduce()
+            const totalStudents = mockData.students.length;
+            const booksIssued = mockData.books.reduce((count, book) => book.issuedTo ? count + 1 : count, 0);
+            const feesDue = mockData.fees.reduce((total, fee) => !fee.paid ? total + fee.amount : total, 0);
+            
+            const today = new Date().toDateString();
+            const todayMeals = mockData.hostelMeals.reduce((count, meal) => 
+                new Date(meal.date).toDateString() === today ? count + 1 : count, 0);
+            
+            const todaySales = mockData.cafeteriaSales.reduce((total, sale) => 
+                new Date(sale.date).toDateString() === today ? total + sale.amount : total, 0);
+
+            // Update DOM
+            document.getElementById('totalStudents').textContent = totalStudents;
+            document.getElementById('booksIssued').textContent = booksIssued;
+            document.getElementById('feesDue').textContent = formatCurrency(feesDue);
+            document.getElementById('todayMeals').textContent = todayMeals;
+            document.getElementById('todaySales').textContent = formatCurrency(todaySales);
+        }
+
+        function renderTopStudents() {
+            const container = document.getElementById('topStudentsList');
+            const topStudents = mockData.results
+                .sort((a, b) => b.percentage - a.percentage)
+                .slice(0, 3);
+
+            container.innerHTML = topStudents.map(result => {
+                const student = mockData.students.find(s => s.id === result.studentId);
+                return `
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                <span class="font-bold text-blue-600">${student.name.charAt(0)}</span>
+                            </div>
+                            <div>
+                                <p class="font-medium">${student.name}</p>
+                                <p class="text-sm text-gray-600">Class ${student.class}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold">${result.percentage}%</p>
+                            <p class="text-sm text-gray-600">Score</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Library Functions
+        function updateLibraryStats() {
+            const totalBooks = mockData.books.length;
+            const issuedBooks = mockData.books.filter(book => book.issuedTo).length;
+            const totalPages = mockData.books
+                .filter(book => book.issuedTo)
+                .reduce((total, book) => total + book.pages, 0);
+
+            document.getElementById('totalBooks').textContent = totalBooks;
+            document.getElementById('libraryIssued').textContent = issuedBooks;
+            document.getElementById('totalPages').textContent = totalPages.toLocaleString();
+        }
+
+        function renderAvailableBooks() {
+            const container = document.getElementById('availableBooks');
+            const availableBooks = mockData.books.filter(book => !book.issuedTo);
+
+            container.innerHTML = availableBooks.map(book => `
+                <div class="p-4 hover:bg-gray-50">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="font-medium text-gray-900">${book.title}</h4>
+                            <p class="text-sm text-gray-600">by ${book.author}</p>
+                            <div class="flex items-center mt-1 space-x-4">
+                                <span class="text-sm text-gray-500">${book.pages} pages</span>
+                                <span class="text-sm text-gray-500">${book.category}</span>
+                            </div>
+                        </div>
+                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
+                            Available
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderIssuedBooks() {
+            const container = document.getElementById('issuedBooks');
+            const issuedBooks = mockData.books.filter(book => book.issuedTo);
+
+            container.innerHTML = issuedBooks.map(book => {
+                const student = mockData.students.find(s => s.id === book.issuedTo);
+                return `
+                    <div class="p-4 hover:bg-gray-50">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h4 class="font-medium text-gray-900">${book.title}</h4>
+                                <p class="text-sm text-gray-600">Issued to: ${student ? student.name : 'Unknown'}</p>
+                                <div class="flex items-center mt-1 space-x-4">
+                                    <span class="text-sm text-gray-500">
+                                        <i class="fas fa-calendar mr-1"></i>
+                                        ${book.issueDate ? new Date(book.issueDate).toLocaleDateString() : 'N/A'}
+                                    </span>
+                                    <span class="text-sm text-gray-500">${book.pages} pages</span>
+                                </div>
+                            </div>
+                            <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+                                Issued
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Attendance Functions
+        function renderAttendanceSummary() {
+            const container = document.getElementById('attendanceSummary');
+            const today = new Date().toDateString();
+            const todayAttendance = mockData.attendance.filter(a => 
+                new Date(a.date).toDateString() === today
+            );
+            
+            const presentCount = todayAttendance.filter(a => a.present).length;
+            const absentCount = todayAttendance.length - presentCount;
+            const attendanceRate = todayAttendance.length > 0 ? (presentCount / todayAttendance.length * 100).toFixed(1) : 0;
+
+            container.innerHTML = `
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-gray-600">Today's Attendance Rate</p>
+                        <p class="text-3xl font-bold">${attendanceRate}%</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-green-50 p-3 rounded-lg">
+                            <p class="text-green-800 font-medium">Present</p>
+                            <p class="text-2xl font-bold">${presentCount}</p>
+                        </div>
+                        <div class="bg-red-50 p-3 rounded-lg">
+                            <p class="text-red-800 font-medium">Absent</p>
+                            <p class="text-2xl font-bold">${absentCount}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Results Functions
+        function renderTopPerformers() {
+            const container = document.getElementById('topPerformers');
+            const topResults = [...mockData.results]
+                .sort((a, b) => b.percentage - a.percentage)
+                .slice(0, 5);
+
+            container.innerHTML = topResults.map(result => {
+                const student = mockData.students.find(s => s.id === result.studentId);
+                return `
+                    <div class="flex items-center justify-between p-3 mb-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                                <span class="font-bold text-purple-600">${student.name.charAt(0)}</span>
+                            </div>
+                            <div>
+                                <p class="font-medium">${student.name}</p>
+                                <p class="text-sm text-gray-600">Class ${student.class}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-lg">${result.percentage}%</p>
+                            <p class="text-sm text-gray-600">Total: ${result.total}/400</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Fees Functions
+        function renderFeeTable() {
+            const container = document.getElementById('feeTable');
+            container.innerHTML = mockData.fees.map(fee => {
+                const student = mockData.students.find(s => s.id === fee.studentId);
+                return `
+                    <tr>
+                        <td class="px-4 py-3">${student ? student.name : 'Unknown'}</td>
+                        <td class="px-4 py-3">${fee.month}</td>
+                        <td class="px-4 py-3">${formatCurrency(fee.amount)}</td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 text-xs rounded-full ${fee.paid ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                ${fee.paid ? 'Paid' : 'Pending'}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3">
+                            ${!fee.paid ? `<button class="mark-paid px-3 py-1 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700" data-id="${fee.studentId}" data-month="${fee.month}">
+                                Mark Paid
+                            </button>` : '-'}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateFeeStats() {
+            const totalCollected = mockData.fees.reduce((total, fee) => fee.paid ? total + fee.amount : total, 0);
+            const pendingAmount = mockData.fees.reduce((total, fee) => !fee.paid ? total + fee.amount : total, 0);
+            
+            // Count unique defaulters
+            const defaulters = new Set(mockData.fees.filter(fee => !fee.paid).map(fee => fee.studentId));
+            
+            document.getElementById('totalCollected').textContent = formatCurrency(totalCollected);
+            document.getElementById('pendingAmount').textContent = formatCurrency(pendingAmount);
+            document.getElementById('defaultersCount').textContent = defaulters.size;
+        }
+
+        // Hostel Functions
+        function renderMealCount() {
+            const container = document.getElementById('mealCount');
+            const today = new Date().toDateString();
+            const todayMeals = mockData.hostelMeals.filter(meal => 
+                new Date(meal.date).toDateString() === today
+            );
+
+            const mealTypes = ['breakfast', 'lunch', 'dinner'];
+            const mealCounts = mealTypes.map(type => ({
+                type,
+                count: todayMeals.filter(meal => meal.mealType === type).length
+            }));
+
+            container.innerHTML = mealCounts.map(meal => `
+                <div class="bg-gray-50 p-4 rounded-lg text-center">
+                    <p class="text-gray-600 capitalize">${meal.type}</p>
+                    <p class="text-3xl font-bold mt-2">${meal.count}</p>
+                    <p class="text-sm text-gray-500 mt-1">Meals served</p>
+                </div>
+            `).join('');
+        }
+
+        // Cafeteria Functions
+        function renderTodaySales() {
+            const container = document.getElementById('todaySalesList');
+            const today = new Date().toDateString();
+            const todaySales = mockData.cafeteriaSales.filter(sale => 
+                new Date(sale.date).toDateString() === today
+            );
+
+            const totalSales = todaySales.reduce((sum, sale) => sum + sale.amount, 0);
+            
+            container.innerHTML = `
+                <div class="mb-4">
+                    <p class="text-gray-600">Total Sales Today</p>
+                    <p class="text-3xl font-bold">${formatCurrency(totalSales)}</p>
+                </div>
+                <div class="space-y-3">
+                    ${todaySales.map(sale => `
+                        <div class="flex justify-between items-center p-2 bg-gray-50 rounded">
+                            <div>
+                                <p class="font-medium">${sale.item}</p>
+                                <p class="text-sm text-gray-600">${getStudentName(sale.studentId)}</p>
+                            </div>
+                            <p class="font-bold">${formatCurrency(sale.amount)}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Chart Initialization
+        function initCharts() {
+            // Overview Chart
+            const overviewCtx = document.getElementById('overviewChart').getContext('2d');
+            new Chart(overviewCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [
+                        {
+                            label: 'Revenue',
+                            data: [12000, 19000, 15000, 25000, 22000, 30000],
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Students',
+                            data: [150, 180, 200, 220, 240, 250],
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+
+            // Subject Chart
+            const subjectCtx = document.getElementById('subjectChart').getContext('2d');
+            new Chart(subjectCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Math', 'Science', 'English', 'History'],
+                    datasets: [{
+                        label: 'Average Score',
+                        data: [85, 90, 82, 88],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.7)',
+                            'rgba(16, 185, 129, 0.7)',
+                            'rgba(245, 158, 11, 0.7)',
+                            'rgba(139, 92, 246, 0.7)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+
+        // Populate Student Dropdowns
+        function populateStudentDropdowns() {
+            const studentSelects = document.querySelectorAll('select[id$="Student"], select[id="saleStudent"]');
+            studentSelects.forEach(select => {
+                select.innerHTML = '<option value="">Select student...</option>' +
+                    mockData.students.map(student => 
+                        `<option value="${student.id}">${student.name} (${student.class})</option>`
+                    ).join('');
+            });
+        }
+
+        // Populate Book Dropdown
+        function populateBookDropdown() {
+            const bookSelect = document.getElementById('issueBook');
+            const availableBooks = mockData.books.filter(book => !book.issuedTo);
+            
+            bookSelect.innerHTML = '<option value="">Choose book...</option>' +
+                availableBooks.map(book => 
+                    `<option value="${book.id}">${book.title} by ${book.author}</option>`
+                ).join('');
+        }
+
+        // Event Listeners
+        function setupEventListeners() {
+            // Tab switching
+            document.querySelectorAll('.tab-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const tab = button.dataset.tab;
+                    
+                    // Update active tab button
+                    document.querySelectorAll('.tab-btn').forEach(btn => {
+                        btn.classList.remove('bg-blue-600', 'text-white');
+                        btn.classList.add('text-gray-300');
+                    });
+                    button.classList.add('bg-blue-600', 'text-white');
+                    button.classList.remove('text-gray-300');
+                    
+                    // Show selected tab content
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    document.getElementById(tab).classList.remove('hidden');
+                    
+                    // Update data for the tab
+                    updateTabData(tab);
+                });
+            });
+
+            // Menu toggle for mobile
+            document.getElementById('menuToggle').addEventListener('click', () => {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('overlay');
+                sidebar.classList.toggle('sidebar-mobile-hidden');
+                overlay.classList.toggle('hidden');
+            });
+
+            // Close sidebar when clicking overlay
+            document.getElementById('overlay').addEventListener('click', () => {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('overlay');
+                sidebar.classList.add('sidebar-mobile-hidden');
+                overlay.classList.add('hidden');
+            });
+
+            // Issue book
+            document.getElementById('issueBookBtn').addEventListener('click', () => {
+                const studentId = document.getElementById('issueStudent').value;
+                const bookId = document.getElementById('issueBook').value;
+                
+                if (!studentId || !bookId) {
+                    alert('Please select both student and book');
+                    return;
+                }
+                
+                const book = mockData.books.find(b => b.id === bookId);
+                if (book) {
+                    book.issuedTo = studentId;
+                    book.issueDate = new Date().toISOString().split('T')[0];
+                    
+                    // Update UI
+                    updateLibraryStats();
+                    renderAvailableBooks();
+                    renderIssuedBooks();
+                    populateBookDropdown();
+                    
+                    // Clear selections
+                    document.getElementById('issueStudent').value = '';
+                    document.getElementById('issueBook').value = '';
+                    
+                    alert('Book issued successfully!');
+                }
+            });
+
+            // Record sale
+            document.getElementById('recordSaleBtn').addEventListener('click', () => {
+                const item = document.getElementById('saleItem').value;
+                const studentId = document.getElementById('saleStudent').value;
+                
+                if (!studentId) {
+                    alert('Please select a student');
+                    return;
+                }
+                
+                const price = parseFloat(item.split(' - $')[1]);
+                const sale = {
+                    studentId,
+                    item: item.split(' - ')[0],
+                    amount: price,
+                    date: new Date().toISOString().split('T')[0]
+                };
+                
+                mockData.cafeteriaSales.push(sale);
+                
+                // Update UI
+                updateDashboardStats();
+                renderTodaySales();
+                
+                // Clear selection
+                document.getElementById('saleStudent').value = '';
+                
+                alert('Sale recorded successfully!');
+            });
+
+            // Mark fee as paid
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('mark-paid')) {
+                    const studentId = e.target.dataset.id;
+                    const month = e.target.dataset.month;
+                    
+                    const fee = mockData.fees.find(f => 
+                        f.studentId === studentId && f.month === month
+                    );
+                    
+                    if (fee) {
+                        fee.paid = true;
+                        fee.paymentDate = new Date().toISOString().split('T')[0];
+                        
+                        // Update UI
+                        renderFeeTable();
+                        updateFeeStats();
+                        updateDashboardStats();
+                        
+                        alert('Fee marked as paid!');
+                    }
+                }
+            });
+        }
+
+        // Update tab-specific data
+        function updateTabData(tab) {
+            switch(tab) {
+                case 'dashboard':
+                    updateDashboardStats();
+                    renderTopStudents();
+                    break;
+                case 'library':
+                    updateLibraryStats();
+                    renderAvailableBooks();
+                    renderIssuedBooks();
+                    populateBookDropdown();
+                    break;
+                case 'attendance':
+                    renderAttendanceSummary();
+                    break;
+                case 'results':
+                    renderTopPerformers();
+                    break;
+                case 'fees':
+                    renderFeeTable();
+                    updateFeeStats();
+                    break;
+                case 'hostel':
+                    renderMealCount();
+                    break;
+                case 'cafeteria':
+                    renderTodaySales();
+                    break;
+            }
+        }
+
+        // Initialize Application
+        function initApp() {
+            // Set dashboard as active
+            document.querySelector('[data-tab="dashboard"]').classList.add('bg-blue-600', 'text-white');
+            
+            // Populate dropdowns
+            populateStudentDropdowns();
+            populateBookDropdown();
+            
+            // Initialize charts
+            initCharts();
+            
+            // Update all data
+            updateTabData('dashboard');
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Add animation to cards on load
+            setTimeout(() => {
+                document.querySelectorAll('.card-hover').forEach(card => {
+                    card.classList.add('fade-in');
+                });
+            }, 100);
+        }
+
+        // Start the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>

@@ -33,7 +33,7 @@ exports.createStudent = async (req, res, next) => {
             message = "Student ID already exists"
 
         if(existingStudent.email = email)
-            message = "Email already exists"
+            message = "Emal already exists"
 
         if(existingStudent.phone === phone)
             message = "Phone number already registered"

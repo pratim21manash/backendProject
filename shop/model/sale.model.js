@@ -40,7 +40,7 @@ const saleSchema = new Schema(
             unique: true,
             required: true
         },
-        isItem: [saleItemSchema],
+        items: [saleItemSchema],
         subTotal: {
             type: Number,
             required: true,
@@ -95,6 +95,16 @@ saleSchema.pre("save", async function(next){
 
     this.invoiceNumber = `INV-${dateStr}-${String(count + 1).padStart(4, "0")}`
     next()
+})
+
+saleSchema.post("save", async function(doc) {
+    const Product = model("Product")
+
+    for (const item of doc.items){
+        await Product.findByIdAndUpdate(item.product, {
+            $inc: { quantity: -item.quantity }
+        })
+    }
 })
 
 

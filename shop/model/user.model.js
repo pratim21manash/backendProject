@@ -34,16 +34,24 @@ const userSchema = new Schema(
     { timestamps: true }
 );
 
-userSchema.pre("save", async function(next){
-    const count = await model("User").countDocuments({email: this.email})
+userSchema.pre("save", async function () {
 
-    if(count > 0)
-        throw next(new Error("Email already exist"))
+    const count = await model("User").countDocuments({
+        email: this.email
+    });
 
-    const encryptedPassword = await bcrypt.hash(this.password.toString(), 12)
-    this.password = encryptedPassword
-    next()
-})
+    if (count > 0) {
+        throw new Error("Email already exists");
+    }
+
+    const encryptedPassword = await bcrypt.hash(
+        this.password.toString(),
+        12
+    );
+
+    this.password = encryptedPassword;
+});
+
 
 
 const UserModel = model("User", userSchema);
